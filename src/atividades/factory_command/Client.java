@@ -16,86 +16,80 @@ package atividades.factory_command;
 
 public class Client {
 
-	public static void main(String[] args) {
+    public static void main(String[] args) {
 
-		System.out.println("TESTE - Factory Method + Command Pattern RPG");
-		
-		System.out.println();
+        System.out.println("TESTE - Factory Method + Command Pattern RPG ");
+        System.out.println();
 
-		ClasseFactory factory = new GuerreiroFactory();
-		Classe guerreiro = factory.createClasse();
-		System.out.println("[Factory] Personagem criado: " + guerreiro.getName());
-		guerreiro.mostrarStatus();
-		
-		System.out.println();
+        ClasseFactory factory = new GuerreiroFactory();
+        Classe guerreiro = factory.createClasse();
+        System.out.println("[Factory] Personagem criado: " + guerreiro.getName());
+        guerreiro.mostrarStatus();
+        System.out.println();
 
-		factory = new ArqueiroFactory();
-		Classe arqueiro = factory.createClasse();
-		System.out.println("[Factory] Personagem criado: " + arqueiro.getName());
-		arqueiro.mostrarStatus();
-		
-		System.out.println();
+        factory = new ArqueiroFactory();
+        Classe arqueiro = factory.createClasse();
+        System.out.println("[Factory] Personagem criado: " + arqueiro.getName());
+        arqueiro.mostrarStatus();
+        System.out.println();
 
+        factory = new MagoFactory();
+        Classe mago = factory.createClasse();
+        System.out.println("[Factory] Personagem criado: " + mago.getName());
+        mago.mostrarStatus();
+        System.out.println();
 
-		factory = new MagoFactory();
-		Classe mago = factory.createClasse();
-		System.out.println("[Factory] Personagem criado: " + mago.getName());
-		mago.mostrarStatus();
-		
-		System.out.println();
+        Classe inimigo = new Guerreiro();
+        System.out.println("[Inimigo] Criado: " + inimigo.getName());
+        System.out.println("[Inimigo] HP inicial: " + inimigo.getHpatual() + "/" + inimigo.getHpmax());
+        System.out.println();
 
-		Classe inimigo = new Guerreiro();
-		inimigo.nome = "Inimigo Teste";
-		System.out.println("Inimigo de teste criado: " + inimigo.nome);
-		System.out.println("HP inicial do inimigo: " + inimigo.hpatual + "/" + inimigo.hpmax);
-		
-		System.out.println();
+        GameReceiver receiver = new GameReceiver(guerreiro);
+        receiver.addEnemy(inimigo);
 
-		GameReceiver.heroi = guerreiro;
-		GameReceiver.enemies.clear();
-		GameReceiver.enemies.add(inimigo);
+        System.out.println("[Command] Guerreiro executa 'Atacar':");
+        System.out.println("  HP do inimigo antes: " + inimigo.getHpatual());
+        Command atacar = new AtacarCommand(receiver);
+        atacar.execute();
+        System.out.println("  HP do inimigo depois: " + inimigo.getHpatual());
+        System.out.println();
 
-		System.out.println("[Invoker] Invocando 'Atacar' com " + guerreiro.getName() + ":");
-		System.out.println("HP do inimigo antes: " + inimigo.hpatual);
-		Command atacar = new AtacarCommand();
-		atacar.execute(); 
-		System.out.println("HP do inimigo depois: " + inimigo.hpatual);
+        receiver.setHeroi(arqueiro); // troca o herói ativo — inimigo continua na lista
+        System.out.println("[Command] Arqueiro executa 'Defender':");
+        Command defender = new DefenderCommand(receiver);
+        defender.execute();
+        System.out.println();
 
-		System.out.println();
+        receiver.setHeroi(mago); // troca para Mago
+        System.out.println("[Command] Mago executa 'Habilidade Especial':");
+        System.out.println("  HP do inimigo antes: " + inimigo.getHpatual());
+        Command habilidade = new UsarHabilidadeCommand(receiver);
+        habilidade.execute();
+        System.out.println("  HP do inimigo depois: " + inimigo.getHpatual());
+        System.out.println();
 
-		System.out.println("[Invoker] Invocando 'Defender' com " + mago.getName() + ":");
-		GameReceiver.heroi = arqueiro;
-		Command defender = new DefenderCommand();
-		defender.execute();
+        receiver.setHeroi(arqueiro); // volta para Arqueiro para mostrar status
+        System.out.println("[Command] Arqueiro executa 'Status':");
+        Command status = new MostrarStatusCommand(receiver);
+        status.execute();
+        System.out.println();
 
-		System.out.println();
+        System.out.println("Testando CommandInvoker com Guerreiro contra Mago:");
 
-		System.out.println("[Invoker] Invocando 'Habilidade' com " + mago.getName() + ":");
-		GameReceiver.heroi = mago;
-		
-		System.out.println("HP do inimigo antes: " + GameReceiver.enemies.get(0).hpatual);
-		Command habilidade = new UsarHabilidadeCommand();
-		habilidade.execute();
-		
-		System.out.println("[Invoker] Invocando 'Status' com " + arqueiro.getName() + ":");
-		GameReceiver.heroi = arqueiro;
-		Command status = new MostrarStatusCommand();
-		status.execute();
-		
-		System.out.println();
+        Classe inimigo2 = new Mago();
+        receiver.setHeroi(guerreiro); // troca para Guerreiro
+        receiver.clearEnemies();
+        receiver.addEnemy(inimigo2);
 
-		GameReceiver.heroi = guerreiro;
+        CommandInvoker invoker = new CommandInvoker(receiver);
 
-		System.out.println("[Invoker] Invocando 'Atacar' com " + guerreiro.getName() + ":");
-		CommandInvoker.invoke("Atacar");
-		
-		System.out.println("[Invoker] Invocando 'Defender' com " + guerreiro.getName() + ":");
-		CommandInvoker.invoke("Defender");
-		
-		System.out.println("[Invoker] Invocando comando inexistente com " + guerreiro.getName() + ":");
-		CommandInvoker.invoke("Fugir"); 
+        System.out.println("[Invoker] Guerreiro 'Atacar':");
+        invoker.invoke("Atacar");
 
-	}
+        System.out.println("[Invoker] Guerreiro 'Defender':");
+        invoker.invoke("Defender");
 
+        System.out.println("[Invoker] Guerreiro  'Fugir' (comando inexistente):");
+        invoker.invoke("Fugir");
+    }
 }
-

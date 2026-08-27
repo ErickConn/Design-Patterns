@@ -1,14 +1,15 @@
 package atividades.factory_command;
 
-public class AtacarCommand extends Command{
+public class AtacarCommand implements Command {
 
-	@Override
-	public void execute() {
-		if (!GameReceiver.enemies.isEmpty()) {
-			GameReceiver.atacar(GameReceiver.heroi, GameReceiver.enemies.get(0));
-		} else {
-			System.out.println("Não há inimigos para atacar.");
-		}
-	}
-	
+    private final GameReceiver receiver;
+
+    public AtacarCommand(GameReceiver receiver) {
+        this.receiver = receiver;
+    }
+
+    @Override
+    public void execute() {
+        receiver.atacar();
+    }
 }

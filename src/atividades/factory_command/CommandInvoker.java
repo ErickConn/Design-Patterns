@@ -1,24 +1,29 @@
 package atividades.factory_command;
+
 import java.util.Map;
 import java.util.HashMap;
 
 public class CommandInvoker {
-	static Map<String, Command> comandos = new HashMap<String, Command>();
-	
-	static {
-		comandos.put("Atacar", new AtacarCommand());
-		comandos.put("Defender", new DefenderCommand());
-		comandos.put("Status", new MostrarStatusCommand());
-		comandos.put("Habilidade", new UsarHabilidadeCommand());
-	}
-	
-	public static void invoke(String comando) {
-		try {
-			Command c = comandos.get(comando);
-			c.execute();
-			
-		} catch(NullPointerException e) {
-			System.err.println("Comando inválido");
-		}
-	}
+
+    private GameReceiver receiver;
+
+    private final Map<String, Command> comandos = new HashMap<String, Command>();
+    
+    public CommandInvoker(GameReceiver receiver) {
+        this.receiver = receiver;
+        
+        comandos.put("Atacar", new AtacarCommand(receiver));
+        comandos.put("Defender", new DefenderCommand(receiver));
+        comandos.put("Status", new MostrarStatusCommand(receiver));
+        comandos.put("Habilidade", new UsarHabilidadeCommand(receiver));
+    }
+
+    public void invoke(String nomeComando) {
+        Command command = comandos.get(nomeComando);
+        if (command == null) {
+            System.out.println("Comando inválido: "+ nomeComando);
+            return;
+        }
+        command.execute();
+    }
 }

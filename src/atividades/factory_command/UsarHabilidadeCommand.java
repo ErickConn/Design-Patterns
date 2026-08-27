@@ -1,14 +1,15 @@
 package atividades.factory_command;
 
-public class UsarHabilidadeCommand extends Command{
+public class UsarHabilidadeCommand implements Command {
 
-	@Override
-	public void execute() {
-		if (!GameReceiver.enemies.isEmpty()) {
-			GameReceiver.usarHabilidadeEspecial(GameReceiver.heroi, GameReceiver.enemies.get(0));
-		} else {
-			System.out.println("Não há inimigos para usar a habilidade.");
-		}
-	}
-	
+    private final GameReceiver receiver;
+
+    public UsarHabilidadeCommand(GameReceiver receiver) {
+        this.receiver = receiver;
+    }
+
+    @Override
+    public void execute() {
+        receiver.usarHabilidadeEspecial();
+    }
 }

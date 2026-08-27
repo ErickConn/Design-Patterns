@@ -1,7 +1,15 @@
 package atividades.factory_command;
 
-public class MostrarStatusCommand extends Command{
-	public void execute() {
-		GameReceiver.mostrarStatus(GameReceiver.heroi);
-	}
+public class MostrarStatusCommand implements Command {
+
+    private final GameReceiver receiver;
+
+    public MostrarStatusCommand(GameReceiver receiver) {
+        this.receiver = receiver;
+    }
+
+    @Override
+    public void execute() {
+        receiver.mostrarStatus();
+    }
 }

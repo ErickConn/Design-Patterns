@@ -1,11 +1,15 @@
 package atividades.factory_command;
 
-public class DefenderCommand extends Command{
+public class DefenderCommand implements Command {
 
-	@Override
-	public void execute() {
-		GameReceiver.defender(GameReceiver.heroi);
-		
-	}
+    private final GameReceiver receiver;
 
+    public DefenderCommand(GameReceiver receiver) {
+        this.receiver = receiver;
+    }
+
+    @Override
+    public void execute() {
+        receiver.defender();
+    }
 }
